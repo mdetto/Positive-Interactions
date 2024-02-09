@@ -45,7 +45,7 @@ sir=function(x,y,sp,dbh,dr,Lx,Ly,Rmax){
       
 	  S[j,i]=length(unique(sp[use]))
           N[j,i]=length(use)
-	  B[j,i]=sum(dbh[use]^2)
+	  B[j,i]=pi/4*sum(dbh[use]^2)
 	  
           cc=table(sp[use])/N[j,i]
 	  h= -cc*log(cc)
@@ -56,7 +56,6 @@ sir=function(x,y,sp,dbh,dr,Lx,Ly,Rmax){
 	}
 }
 
- B=pi/4*B
  dist=seq(2,Rmax,dr)
  return(list(S=S,N=N,B=B,H=H,dist=dist))
  }
