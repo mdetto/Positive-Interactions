@@ -17,11 +17,11 @@ sir=function(x,y,sp,dbh,dr,Lx,Ly,Rmax){
 	  cat(n-i,"\r")
     
 	  for (j in 1:(length(R)-1)){
-	# %periodic conditions
 	
-	  xi=x
-    yi=y
-	  
+	# focal individual
+	xi=x
+        yi=y
+	  # periodic conditions
 	  if  (x[i]>Lx-R[j+1]){
 		xi[xi<R[j+1]]=xi[xi<R[j+1]]+Lx
 	  }
