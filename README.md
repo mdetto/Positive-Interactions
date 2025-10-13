@@ -6,7 +6,7 @@ R Code 1: ISAR.r - Script for computing the number of individuals (N) and the nu
 
 R Code 2: RNA.RNS.r - Script for calculating the relative neighborhood abundance and richness for trees within a 60 m circular neighborhood of the focal species and falling within the same diameter at breast height (DBH) class as the focal tree, “RNN.RNS”.
 
-R Code 3: LocalRLNullMode.r  | Script for local random labeling (LRL) null model test.
+R Code 3: LocalRLNullMode.r  - Script for local random labeling (LRL) null model test.
 
 Additional scripts
 
