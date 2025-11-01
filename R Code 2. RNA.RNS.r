@@ -1,4 +1,6 @@
-R Code 2 | Script for calculating the relative neighborhood abundance and richness for trees within 60 m circular neighborhood of focal species and falling within the same diameter at breast height (DBH) class as the focal tree, “RNN.RNS”.
+# R Code 2 | Script for calculating the relative neighborhood abundance and richness
+# for trees within a 60 m circular neighborhood of the focal species and falling within the 
+#same diameter at breast height (DBH) class as the focal tree, “RNN.RNS”.
 #library(emdbook) needed
 
 rich.diff.60m=function(tr,S,dist){   
@@ -51,5 +53,6 @@ for (i in 1:sp.no){
  }
   return(list(Y=Y,p=p))
 }
+
 
 
