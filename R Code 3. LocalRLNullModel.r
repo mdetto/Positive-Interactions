@@ -81,7 +81,7 @@ for (i in 1:n){
     RNB[i,] = ISAR.B/rowMeans(ISAR.null.B, na.rm = TRUE)
     RNH[i,] = ISAR.H/rowMeans(ISAR.null.H, na.rm = TRUE)   
       
-    # take 0.025 and 0.975 quantiles-------------------------------------------------step 2.4 calculate confidence intervals
+    # take 0.025 and 0.975 quantiles and std-------------------------------------------step 2.4 
     RNN.dn[i,] = ISAR.N/apply(ISAR.null.N, 1, quantile, probs = .025, na.rm = TRUE )
     RNS.dn[i,] = ISAR.S/apply(ISAR.null.S, 1, quantile, probs = .025, na.rm = TRUE )
     RNB.dn[i,] = ISAR.B/apply(ISAR.null.B, 1, quantile, probs = .025, na.rm = TRUE )
@@ -92,6 +92,11 @@ for (i in 1:n){
     RNB.up[i,] = ISAR.B/apply(ISAR.null.B, 1, quantile, probs = .975, na.rm = TRUE )
     RNH.up[i,] = ISAR.H/apply(ISAR.null.H, 1, quantile, probs = .975, na.rm = TRUE )
 
+    RNN.sd[i,] = ISAR.N/apply(ISAR.null.N, 1, sd, probs = .975, na.rm = TRUE )
+    RNS.sd[i,] = ISAR.S/apply(ISAR.null.S, 1, sd, probs = .975, na.rm = TRUE )
+    RNB.sd[i,] = ISAR.B/apply(ISAR.null.B, 1, sd, probs = .975, na.rm = TRUE )
+    RNH.sd[i,] = ISAR.H/apply(ISAR.null.H, 1, sd, probs = .975, na.rm = TRUE )
+
   }
     #add t.test----------------------------------------------------------------------step 2.5
     for (k in 1:m) {
@@ -101,12 +106,13 @@ for (i in 1:n){
     p.H[k,i]=t.test(S.H[k,],ISAR.null.H[k,])$p.value}
 }
 
-  RNN.pN=cbind(allsp, RNN,t(p.N),RNN.dn,RNN.up)
-  RNS.pS=cbind(allsp, RNS,t(p.S),RNS.dn,RNS.up)
-  RNB.pB=cbind(allsp, RNB,t(p.B),RNB.dn,RNB.up)
-  RNH.pH=cbind(allsp, RNB,t(p.H),RNB.dn,RNB.up)
+  RNN.pN=cbind(allsp, RNN,t(p.N),RNN.dn,RNN.up,RNN.sd)
+  RNS.pS=cbind(allsp, RNS,t(p.S),RNS.dn,RNS.up,RNS.sd)
+  RNB.pB=cbind(allsp, RNB,t(p.B),RNB.dn,RNB.up,RNB.sd)
+  RNH.pH=cbind(allsp, RNB,t(p.H),RNB.dn,RNB.up,RNH.sd)
  
   return(list(RNN.pN=RNN.pN,RNS.pS=RNS.pS))
 
 }
+
 
