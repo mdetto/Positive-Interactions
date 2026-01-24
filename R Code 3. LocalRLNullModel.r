@@ -64,7 +64,7 @@ for (i in 1:n){
 
       if (length(use1)>0) {     #-----------------------------------------this "0" could be changed to 1,2, or larger values if problems occur
        
-        k0 = sample(use1,999,replace = TRUE)   #-------------------------------------step 2.2 species randomization
+        k0 = sample(use1,999,replace = TRUE)   #-------------------------------------step 2.2 randomization
         H.N[j,,] = N1[,k0]
         H.S[j,,] = S1[,k0]
         H.B[j,,] = B1[,k0]
@@ -116,6 +116,7 @@ for (i in 1:n){
   return(list(RNN.pN=RNN.pN,RNS.pS=RNS.pS))
 
 }
+
 
 
 
