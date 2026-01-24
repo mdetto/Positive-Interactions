@@ -56,8 +56,8 @@ for (i in 1:n){
     for (j in 1:n1){
      
       # select individuals with similar DBH-------------------------------step 2.2 select species within similar DBH
-      d = sqrt((x1-x0[j])^2+(y1-y0[j])^2)                        #considering 60 m radius restriction
-      use1 = which(d<dmax & abs(ld1-ld0[j])<db)       #considering 60 m radius restriction
+      d = sqrt((x1-x0[j])^2+(y1-y0[j])^2)                      #compute distance from focal individual
+      use1 = which(d<dmax & abs(ld1-ld0[j])<db)                #select individuals within 60 m radius and the same dbh class
       #use1 = which(abs(ld1-ld0[j])<db)                        #without considering 60 m radius restriction
 
       if (length(use1)>0) {     #-----------------------------------------this "0" could be changed to 1,2, or larger values if problems occur
@@ -114,5 +114,6 @@ for (i in 1:n){
   return(list(RNN.pN=RNN.pN,RNS.pS=RNS.pS))
 
 }
+
 
 
