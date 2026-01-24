@@ -5,12 +5,12 @@ rich.diff.ran.sp1=function(mainr){
 
 #parameters setting
 allsp = sort(unique(mainr$sp))   #------------------------------------------------------step 1
-n = length(allsp)
-m = length(res$dist)
+n = length(allsp) # number of species
+m = length(res$dist) # number of distanced analyzed
 
 ## parameters setting
-dmax = 60        # maximum distance for null model, m   #considering 60 m radius restriction
-db   = 0.1       # log10 DBH interval for null model
+dmax = 60        # maximum distance (m) for null model
+db   = 0.1       # log10 DBH interval for size classes
 
 ################# randomization method 2 #########################
 ## MAIN loop over species--------------------------------------------------------step 2
@@ -59,7 +59,7 @@ for (i in 1:n){
      
       # select individuals with similar DBH-------------------------------step 2.2 select individuals within similar DBH
       d = sqrt((x1-x0[j])^2+(y1-y0[j])^2)                      #compute distance from focal individual
-      use1 = which(d<dmax & abs(ld1-ld0[j])<db)                #select individuals within 60 m radius and the same dbh class
+      use1 = which(d<dmax & abs(ld1-ld0[j])<db)                #select individuals within 60 m radius and in the same dbh class of focal individual
       #use1 = which(abs(ld1-ld0[j])<db)                        #without considering 60 m radius restriction
 
       if (length(use1)>0) {     #-----------------------------------------this "0" could be changed to 1,2, or larger values if problems occur
@@ -116,6 +116,7 @@ for (i in 1:n){
   return(list(RNN.pN=RNN.pN,RNS.pS=RNS.pS))
 
 }
+
 
 
 
