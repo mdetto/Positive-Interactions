@@ -25,8 +25,9 @@ for (i in 1:n){
   use = mainr$sp==allsp[i]
   n1 = sum(use)
  
-  if (n1>1){        # only consider species with more than 1 individuals later.
-   
+  if (n1>1){        # only consider species with more than 1 individual
+
+    # focal species
     x0 = mainr$gx[use]
     y0 = mainr$gy[use]
     ld0 = log10(mainr$dbh[use])
@@ -34,7 +35,8 @@ for (i in 1:n){
     S.S = res$S[,use]
     S.B = res$B[,use]
     S.H = res$H[,use]
-   
+
+    # non-focal species
     x1 = mainr$gx[!use]
     y1 = mainr$gy[!use]
     ld1 = log10(mainr$dbh[!use])
@@ -55,7 +57,7 @@ for (i in 1:n){
 
     for (j in 1:n1){
      
-      # select individuals with similar DBH-------------------------------step 2.2 select species within similar DBH
+      # select individuals with similar DBH-------------------------------step 2.2 select individuals within similar DBH
       d = sqrt((x1-x0[j])^2+(y1-y0[j])^2)                      #compute distance from focal individual
       use1 = which(d<dmax & abs(ld1-ld0[j])<db)                #select individuals within 60 m radius and the same dbh class
       #use1 = which(abs(ld1-ld0[j])<db)                        #without considering 60 m radius restriction
@@ -114,6 +116,7 @@ for (i in 1:n){
   return(list(RNN.pN=RNN.pN,RNS.pS=RNS.pS))
 
 }
+
 
 
 
