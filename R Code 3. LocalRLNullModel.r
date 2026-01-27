@@ -94,11 +94,6 @@ for (i in 1:n){
     RNB.up[i,] = ISAR.B/apply(ISAR.null.B, 1, quantile, probs = .975, na.rm = TRUE )
     RNH.up[i,] = ISAR.H/apply(ISAR.null.H, 1, quantile, probs = .975, na.rm = TRUE )
 
-    RNN.sd[i,] = ISAR.N/apply(ISAR.null.N, 1, sd, probs = .975, na.rm = TRUE )
-    RNS.sd[i,] = ISAR.S/apply(ISAR.null.S, 1, sd, probs = .975, na.rm = TRUE )
-    RNB.sd[i,] = ISAR.B/apply(ISAR.null.B, 1, sd, probs = .975, na.rm = TRUE )
-    RNH.sd[i,] = ISAR.H/apply(ISAR.null.H, 1, sd, probs = .975, na.rm = TRUE )
-
   }
     #add t.test----------------------------------------------------------------------step 2.5
     for (k in 1:m) {
@@ -116,6 +111,7 @@ for (i in 1:n){
   return(list(RNN.pN=RNN.pN,RNS.pS=RNS.pS))
 
 }
+
 
 
 
