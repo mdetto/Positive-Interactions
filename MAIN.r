@@ -1,32 +1,37 @@
+############################################################################################################################
+#########             Figure 2 (or extended Data Fig.1 and extended Data Fig.2)                          ###################
+############################################################################################################################
+rm(list = ls())
+setwd("C:/Users/mdetto/Princeton Dropbox/Matteo Detto/paper/Han/NeighborhoodDiversity/Resubmission/analysis_01262026")
+source("myplot.r")
 site.summary = read.csv('SiteSummary17.csv',header = T)
 area=site.summary$area
 path = 'Sites/'
 sname=dir(path)
 library(BSDA)
-
-
-###########     Fig. 2 (or extended Data Fig.2)  ###########################
-j = 1  # radius unit (j=1:8)
-R.pN = R.pS = numeric(17)
-SE.pN = SE.pS = numeric(17)
+j = 1           # radius unit (j=1,2,...,8 --> 2,4,...,16 m)
+p.tr = 1        # set this to 0.05 for excluding non-significant species no null model test, 1 no significant level
+abund.tr = 50   # set this to 50 for excluding rare species 
+R.pN = R.pS = SE.pN = SE.pS = numeric(17)
 
 for (i in 1:17){
   cat(i,"\r")
-  fname = paste0(path,sname[i],'/null.model.matteo/RNN.pN.csv')
+  fname = paste0(path,sname[i],'/null.model.new/RNN.pN.csv')
   dat.N = read.csv(fname, fileEncoding = "GBK")
   
-  fname = paste0(path,sname[i],'/null.model.matteo/RNS.pS.csv')
+  fname = paste0(path,sname[i],'/null.model.new/RNS.pS.csv')
   dat.S = read.csv(fname, fileEncoding = "GBK")
   
-  fname = paste0(path,sname[i],'/all.individuals/No.stems1.csv')
-  abund = read.csv(fname, fileEncoding = "GBK")
+  abund = dat.N[,27]
   
-  use =  !is.na(dat.N[,3]) & abund[,2]>=1
-  
+  use =  !is.na(dat.N[,(2+j)]) & abund>=abund.tr & dat.N[,(10+j)]<=p.tr
   n = sum(use)
   R.pN[i] = sum(dat.N[use,(2+j)]>1)/n
   SE.pN[i] = sqrt(R.pN[i]*(1-R.pN[i])/n)
   
+  
+  use =  !is.na(dat.N[,(2+j)]) & abund>=abund.tr & dat.S[,(10+j)]<=p.tr
+  n = sum(use)
   R.pS[i] = sum(dat.S[use,(2+j)]>1)/n
   SE.pS[i] = sqrt(R.pS[i]*(1-R.pS[i])/n)
   
@@ -40,8 +45,11 @@ myplot(x = site.summary$adj.lat.abs, R.pN, SE.pN, R.pS, SE.pS,
        ylabel = "positive neighborhood",
        c(0,70),c(0,0.7))
 
-
-##############Fig. 3:legumes and non-AM exclusion analysis###############
+############################################################################################################################
+#########                 Figure 3 (legumes and non-AM exclusion analysis)                               ###################
+############################################################################################################################
+rm(list = ls())
+setwd("C:/Users/mdetto/Princeton Dropbox/Matteo Detto/paper/Han/NeighborhoodDiversity/Resubmission/analysis_01262026")
 site.summary = read.csv('SiteSummary17.csv',header = T)
 path = 'Sites/'
 sname=dir(path)
@@ -54,14 +62,13 @@ R.pN2 = R.pS2 = matrix(nrow=17,ncol=8)
 
 for (i in 1:17){
   cat(i,"\r")
-  fname  =paste0(path,sname[i],'/null.model.matteo/RNN.pN.csv')
+  fname  =paste0(path,sname[i],'/null.model.new/RNN.pN.csv')
   dat.N = read.csv(fname, fileEncoding = "GBK")
   
-  fname  =paste0(path,sname[i],'/null.model.matteo/RNS.pS.csv')
+  fname  =paste0(path,sname[i],'/null.model.new/RNS.pS.csv')
   dat.S = read.csv(fname, fileEncoding = "GBK")
   
-  fname  =paste0(path,sname[i],'/all.individuals/No.stems1.csv')
-  abund = read.csv(fname, fileEncoding = "GBK")
+  abund = dat.N[,27]
   
   # legume
   fname  =paste0(path,sname[i],'/all.individuals/legumes.csv')
@@ -85,9 +92,9 @@ for (i in 1:17){
     index.FG[sp==fungi[j,2] & fungi[j,3]=="AM"]=TRUE
   }
   
-  use0 = !is.na(dat.N[,3]) & abund[,2]>9
-  use1 = !is.na(dat.N[,3]) & abund[,2]>9 & !index.LG
-  use2 = !is.na(dat.N[,3]) & abund[,2]>9 & !index.FG
+  use0 = !is.na(dat.N[,3]) & abund>9
+  use1 = !is.na(dat.N[,3]) & abund>9 & !index.LG
+  use2 = !is.na(dat.N[,3]) & abund>9 & !index.FG
   
   for (j in 1:8){
     # all species
@@ -144,8 +151,7 @@ for (j in 1:8){
   h1[j] = z.test(r1,r2,sigma.x = sd(r1),sigma.y = sd(r2))$p.value
   h2[j] = z.test(r1,r3,sigma.x = sd(r1),sigma.y = sd(r3))$p.value
 }
-h1
-h2
+
 as.numeric(format(round(h1, 4)))
 format(round(h2, 4),nsmall = 4)
 
@@ -187,30 +193,88 @@ for (j in 1:8){
   h1[j] = z.test(r1,r2,sigma.x = sd(r1),sigma.y = sd(r2))$p.value
   h2[j] = z.test(r1,r3,sigma.x = sd(r1),sigma.y = sd(r3))$p.value
 }
-h1
-h2
+
 as.numeric(format(round(h1, 4)))
 format(round(h2, 4),nsmall = 4)
 
 
+############################################################################################################################
+#########                 Data Figure 4  (and extended Data Figure 4)                                    ###################
+############################################################################################################################
+rm(list = ls())
+setwd("C:/Users/mdetto/Princeton Dropbox/Matteo Detto/paper/Han/NeighborhoodDiversity/Resubmission/analysis_01262026")
+source("myplot.r")
+site.summary = read.csv('SiteSummary17.csv',header = T)
+area=site.summary$area
+path = 'Sites/'
+sname=dir(path)
+library(BSDA)
+site.name=c("Barro Colorado Island (BCI)","Baishanzu","Chebaling", "Dinghushan", "Gutianshan", "Heishiding", "Jianfengling", "Luquillo", 
+         "Nanling", "Palanan", "Pasoh", "Puer", "Rabi", "TPK", "Utah", "Wanang","Yasuni")
 
-###########  Fig. 5   ###########################
+plt=c(1:17)
+par(mfrow = c(4, 2), mar=c(4.1,4,2,1))
+for (i in 1:17){
+  j = plt[i]
+  fname  =paste0(path,sname[j],'/null.model.new/RNN.pN.csv')
+  dat.N = read.csv(fname, fileEncoding = "GBK")
+  
+  fname  =paste0(path,sname[j],'/null.model.new/RNS.pS.csv')
+  dat.S = read.csv(fname, fileEncoding = "GBK")
+  
+  abund = dat.N[,27]
+  
+  
+  if (i %in% c(4,8,12,16,17) ){
+    plot(dat.N[,3],abund, log='y', xlab = 'Relative neighborhood abundance', ylab = 'Abundance', xlim = c(0,2))
+  }else{
+    plot(dat.N[,3],abund, log='y', ylab = 'Abundance', xlab = '', xlim = c(0,2))
+  }
+  
+  use = dat.N[,11]<0.05
+  points(dat.N[use,3],abund[use],col='red')
+  abline(v=1)
+  title(site.name[j])
+  
+  if (i %in% c(4,8,12,16,17) ){
+    plot(dat.S[,3],abund, log='y', xlab = 'Relative neighborhood richness', ylab='', xlim = c(0,2))
+  }else{
+    plot(dat.S[,3],abund, log='y', xlab = '', ylab='', xlim = c(0,2))
+  }
+  
+  use = dat.S[,11]<0.05
+  points(dat.S[use,3],abund[use],col='red')
+  abline(v=1)
+  title(site.name[j])
+  
+}
+
+
+############################################################################################################################
+#########                         Figure 5    (MAT)                                                      ###################
+############################################################################################################################
+rm(list = ls())
+setwd("C:/Users/mdetto/Princeton Dropbox/Matteo Detto/paper/Han/NeighborhoodDiversity/Resubmission/analysis_01262026")
+source("myplot.r")
+path = 'Sites/'
+site.summary = read.csv('SiteSummary17.csv',header = T)
+area=site.summary$area
+sname=dir(path)
 j = 1
 R.pN = R.pS = numeric(17)
 SE.pN = SE.pS = numeric(17)
 
 for (i in 1:17){
   cat(i,"\r")
-  fname = paste0(path,sname[i],'/null.model.matteo/RNN.pN.csv')
+  fname = paste0(path,sname[i],'/null.model.new/RNN.pN.csv')
   dat.N = read.csv(fname, fileEncoding = "GBK")
   
-  fname  =paste0(path,sname[i],'/null.model.matteo/RNS.pS.csv')
+  fname  =paste0(path,sname[i],'/null.model.new/RNS.pS.csv')
   dat.S = read.csv(fname, fileEncoding = "GBK")
   
-  fname  =paste0(path,sname[i],'/all.individuals/No.stems1.csv')
-  abund = read.csv(fname, fileEncoding = "GBK")
+  abund = dat.N[,27]
   
-  use =  !is.na(dat.N[,3]) & abund[,2]>1
+  use =  !is.na(dat.N[,3]) & abund>1
   n = sum(use)
   
   R.pN[i] = sum(dat.N[use,(2+j)]>1)/n
@@ -230,243 +294,18 @@ myplot(site.summary$annu.temp, R.pN, SE.pN, R.pS, SE.pS,
 
 
 
-###########  Extended Data Figure 1 ###########################
-j = 1
-R.pN = R.pS = numeric(17)
-SE.pN = SE.pS = N= numeric(17)
-
-for (i in 1:17){
-  cat(i,"\r")
-  fname  =paste0(path,sname[i],'/null.model.matteo/RNN.pN.csv')
-  dat.N = read.csv(fname, fileEncoding = "GBK")
-  
-  fname  =paste0(path,sname[i],'/null.model.matteo/RNS.pS.csv')
-  dat.S = read.csv(fname, fileEncoding = "GBK")
-  
-  fname  =paste0(path,sname[i],'/all.individuals/No.stems1.csv')
-  abund = read.csv(fname, fileEncoding = "GBK")
-  
-  use =  !is.na(dat.N[,3]) & abund[,2]>=1
-  
-  n = sum(dat.N[use,(10+j)]<0.05)
-  R.pN[i] = sum(dat.N[use,(2+j)]>1 & dat.N[use,(10+j)]<0.05)/n
-  SE.pN[i] = sqrt(R.pN[i]*(1-R.pN[i])/n)
-  
-  n = sum(dat.S[use,(10+j)]<0.05)
-  R.pS[i] = sum(dat.S[use,(2+j)]>1 & dat.S[use,(10+j)]<0.05)/n
-  SE.pS[i] = sqrt(R.pS[i]*(1-R.pS[i])/n)
-  
-  N[i] = mean(as.numeric(abund[use,2]))
-}
-
-
-par(mfrow = c(1, 2))
-j = 1
-
-myplot(x = site.summary$adj.lat.abs, R.pN, SE.pN, R.pS, SE.pS,
-       xlabel = "Absolute adjusted latitude",
-       ylabel = "positive neighborhood",
-       c(0,70),c(0,0.7))
-
-
-###########      Extended data Fig. 2    ###########################
-par(mfrow = c(2, 2))
-
-plot(site.summary$adj.lat.abs,R.pN1[,1],xlab = "Absolute adjusted latitude", ylab = c("Proportion of species with","positive neighborhood abundance"),
-     xlim = c(0,70), ylim = c(0.07,0.53), pch=19)
-lm1 = lm(R.pN1[,1]~site.summary$adj.lat.abs)
-abline(lm1)
-z=summary(lm1)
-r2 = z$r.square
-p = z$coefficients[8]
-
-if (p<1e-3){
-  title(paste0('a) RL: R2 = ',as.character(round(r2,2)),', p<1e-3'))
-} else {
-  title(paste0('a) RL: R2 = ',as.character(round(r2,2)),', p  = ',as.character(round(p,4))))
-}
-
-
-plot(site.summary$adj.lat.abs,R.pN2[,1],xlab = "Absolute adjusted latitude", ylab = c("Proportion of species with","positive neighborhood abundance"),
-     xlim = c(0,70), ylim = c(0.7,1), pch=19)
-lm1 = lm(R.pN2[,1]~site.summary$adj.lat.abs)
-abline(lm1)
-z=summary(lm1)
-r2 = z$r.square
-p = z$coefficients[8]
-if (p<1e-3){
-  title(paste0('b) CSR: R2 = ',as.character(round(r2,2)),', p<1e-3'))
-} else {
-  title(paste0('b) CSR: R2 = ',as.character(round(r2,2)),', p  = ',as.character(round(p,4))))
-}
-
-## removing Utah plot
-abline(lm(R.pN2[c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17),1]~site.summary$adj.lat.abs[c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17)]),col='red')
-summary(lm(R.pN2[c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17),1]~site.summary$adj.lat.abs[c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17)]))
-
-
-plot(site.summary$adj.lat.abs,R.pS1[,1],xlab = "Absolute adjusted latitude", ylab = c("Proportion of species with","positive neighborhood richness"),
-     xlim = c(0,70), ylim = c(0.,0.2), pch=19)
-lm1 = lm(R.pS1[,1]~site.summary$adj.lat.abs)
-abline(lm1)
-z=summary(lm1)
-r2 = z$r.square
-p = z$coefficients[8]
-if (p<1e-3){
-  title(paste0('c) RL: R2 = ',as.character(round(r2,2)),', p<1e-3'))
-} else {
-  title(paste0('c) RL: R2 = ',as.character(round(r2,2)),', p  = ',as.character(round(p,4))))
-}
-
-
-plot(site.summary$adj.lat.abs,R.pS2[,1],xlab = "Absolute adjusted latitude", ylab = c("Proportion of species with","positive neighborhood richness"),
-     xlim = c(0,70), ylim = c(0,1), pch=19)
-lm1 = lm(R.pS2[,1]~site.summary$adj.lat.abs)
-abline(lm1)
-z=summary(lm1)
-r2 = z$r.square
-p = z$coefficients[8]
-if (p<1e-3){
-  title(paste0('d) CSR: R2 = ',as.character(round(r2,2)),', p<1e-3'))
-} else {
-  title(paste0('d) CSR: R2 = ',as.character(round(r2,2)),', p  = ',as.character(round(p,4))))
-}
-
-
-## removing Utah plot
-abline(lm(R.pS2[c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17),1]~site.summary$adj.lat.abs[c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17)]),col='red')
-summary(lm(R.pS2[c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17),1]~site.summary$adj.lat.abs[c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17)]))
 
 
 
-sname1=c("Barro Colorado Island (BCI)","Baishanzu","Chebaling", "Dinghushan", "Gutianshan", "Heishiding", "Jianfengling", "Luquillo", 
-         "Nanling", "Palanan", "Pasoh", "Puer", "Rabi", "TPK", "Utah", "Wanang","Yasuni")
-#########  Figure 5  ###################
-plt=c(11,1,7,5)
-par(mfrow = c(4, 2), mar=c(4.1,4,2,1))
-for (i in 1:4){
-  j = plt[i]
-  fname  =paste0(path,sname[j],'/null.model.matteo/RNN.pN.csv')
-  dat.N = read.csv(fname, fileEncoding = "GBK")
-  
-  fname  =paste0(path,sname[j],'/null.model.matteo/RNS.pS.csv')
-  dat.S = read.csv(fname, fileEncoding = "GBK")
-  
-  fname  =paste0(path,sname[j],'/all.individuals/No.stems1.csv')
-  abund = read.csv(fname, fileEncoding = "GBK")
-  
-  
-  if (i == 4){
-    plot(dat.N[,3],abund[,2], log='y', xlab = 'Relative neighborhood abundance', ylab = 'Abundance', xlim = c(0,2))
-  }else{
-    plot(dat.N[,3],abund[,2], log='y', ylab = 'Abundance', xlab = '', xlim = c(0,2))
-  }
-  
-  use =     dat.N[,11]<0.05
-  points(dat.N[use,3],abund[use,2],col='red')
-  abline(v=1)
-  title(sname1[j])
-  
-  if (i == 4){
-    plot(dat.S[,3],abund[,2], log='y', xlab = 'Relative neighborhood richness', ylab='', xlim = c(0,2))
-  }else{
-    plot(dat.S[,3],abund[,2], log='y', xlab = '', ylab='', xlim = c(0,2))
-  }
-  
-  use =     dat.S[,11]<0.05
-  points(dat.S[use,3],abund[use,2],col='red')
-  abline(v=1)
-  title(sname1[j])
-  
-}
-
-###########  Extended Figure 4  #################
-plt=c(1:17)
-par(mfrow = c(4, 2), mar=c(4.1,4,2,1))
-for (i in 1:17){
-  j = plt[i]
-  fname  =paste0(path,sname[j],'/null.model.matteo/RNN.pN.csv')
-  dat.N = read.csv(fname, fileEncoding = "GBK")
-  
-  fname  =paste0(path,sname[j],'/null.model.matteo/RNS.pS.csv')
-  dat.S = read.csv(fname, fileEncoding = "GBK")
-  
-  fname  =paste0(path,sname[j],'/all.individuals/No.stems1.csv')
-  abund = read.csv(fname, fileEncoding = "GBK")
-  
-  
-  if (i %in% c(4,8,12,16,17) ){
-    plot(dat.N[,3],abund[,2], log='y', xlab = 'Relative neighborhood abundance', ylab = 'Abundance', xlim = c(0,2))
-  }else{
-    plot(dat.N[,3],abund[,2], log='y', ylab = 'Abundance', xlab = '', xlim = c(0,2))
-  }
-  
-  use =     dat.N[,11]<0.05
-  points(dat.N[use,3],abund[use,2],col='red')
-  abline(v=1)
-  title(sname1[j])
-  
-  if (i %in% c(4,8,12,16,17) ){
-    plot(dat.S[,3],abund[,2], log='y', xlab = 'Relative neighborhood richness', ylab='', xlim = c(0,2))
-  }else{
-    plot(dat.S[,3],abund[,2], log='y', xlab = '', ylab='', xlim = c(0,2))
-  }
-  
-  use =     dat.S[,11]<0.05
-  points(dat.S[use,3],abund[use,2],col='red')
-  abline(v=1)
-  title(sname1[j])
-  
-}
-
-
-
-
-#----------------------------------------------------------------------------------
-for (iii in 1:17){
-  
-  fname  =paste0('Sites/',sname[iii],'/plotname.all.Rdata')
-  dat = load(fname)
-  
-  res$cvb=cvb
-  res$Lx=Lx
-  res$Ly=Ly
-  res$n0=length(res$N[1,])
-  fname  =paste0('Sites/',sname[iii],'/NewTest.RData')
-  saveRDS(res,fname)
-}
-
-##### for LARGE TREE EXCLUSION ANALYSIS ############
+############################################################################################################################
+#########                  Extended Data Figure 6 (absolute proportions)                                 ###################
+############################################################################################################################
+rm(list = ls())
+setwd("C:/Users/mdetto/Princeton Dropbox/Matteo Detto/paper/Han/NeighborhoodDiversity/Resubmission/analysis_01262026")
+source("myplot.r")
 site.summary = read.csv('SiteSummary17.csv',header = T)
 path = 'Sites/'
 sname=dir(path)
-
-n.class = 25
-
-for (iii in 1:17){
-  cat(iii,"\r")
-  fname  =paste0(path,sname[iii],'/plotname.all.RData')
-  datx = load(fname)
-  
-  
-  q = quantile(log(dbh),probs=seq(0,1,length.out = n.class+1))
-  X.S=X.H=numeric(n.class)
-  for (i in 1:n.class){
-    use=log(dbh)>=q[i] & log(dbh)<q[i+1]
-    X.S[i] = mean(res$S[1,use])
-    X.H[i] = mean(res$H[1,use])
-    
-  }
-  
-  par(mfrow = c(1, 2))
-  
-  plot(1:n.class, X.S, type = "o") 
-  plot(1:n.class, X.H/X.S, type = "o")  
-  title(sname[iii])
-  
-}
-
-##########  Extended Data Figure 6 ###########################
 j = 1
 R.aN = R.aS = numeric(17)
 R.pN = R.pS = numeric(17)
@@ -480,20 +319,19 @@ R.nN.std = R.nS.std = numeric(17)
 SE.pN.std = SE.pS.std = numeric(17)
 SE.nN.std = SE.nS.std = numeric(17)
 
-
+N = numeric(17)
 for (i in 1:17){
   cat(i,"\r")
-  fname  =paste0(path,sname[i],'/null.model.matteo/RNN.pN.csv')
+  fname  =paste0(path,sname[i],'/null.model.new/RNN.pN.csv')
   dat.N = read.csv(fname, fileEncoding = "GBK")
   
-  fname  =paste0(path,sname[i],'/null.model.matteo/RNS.pS.csv')
+  fname  =paste0(path,sname[i],'/null.model.new/RNS.pS.csv')
   dat.S = read.csv(fname, fileEncoding = "GBK")
   
-  fname  =paste0(path,sname[i],'/all.individuals/No.stems1.csv')
-  abund = read.csv(fname, fileEncoding = "GBK")
+  abund = dat.N[,27]
   
   
-  use =  !is.na(dat.N[,3]) & abund[,2]>1
+  use =  !is.na(dat.N[,3]) & abund>1
   n = sum(use)
   
   R.pN[i] = sum(dat.N[use,(2+j)]>1 & dat.N[use,(10+j)]<0.05)/n
@@ -513,12 +351,12 @@ for (i in 1:17){
   
   
   
-  N[i] = mean(as.numeric(abund[use,2]))
+  N[i] = mean(abund[use])
   
   
   ## standardized
   nd = data.frame(x  = 3)
-  x = log10(abund[use,2])
+  x = log10(abund[use])
   y = dat.N[use,(2+j)]>1 & dat.N[use,(10+j)]<0.05  
   lm1 = glm(y~x,family=binomial())
   pred = predict(lm1,nd,type = "response", se.fit = TRUE)
@@ -588,3 +426,104 @@ myplot(x = site.summary$adj.lat.abs, R.nN.std, SE.nN.std*0, R.nS.std, SE.nS.std*
 
 
 
+
+
+############################################################################################################################
+#########                  Extended Data Figure 7  (z-score)                                             ###################
+############################################################################################################################
+rm(list = ls())
+site.name=c("Barro Colorado Island (BCI)","Baishanzu","Chebaling", "Dinghushan", "Gutianshan", "Heishiding", "Jianfengling", "Luquillo", 
+            "Nanling", "Palanan", "Pasoh", "Puer", "Rabi", "TPK", "Utah", "Wanang","Yasuni")
+setwd("C:/Users/mdetto/Princeton Dropbox/Matteo Detto/paper/Han/NeighborhoodDiversity/Resubmission/analysis_01262026")
+path = 'Sites/'
+sname=dir(path)
+j = 1
+par(mfrow = c(4, 2), mar=c(4.1,4,2,1))
+for (i in 1:17){
+  
+  fname  =paste0(path,sname[i],'/null.model.new/RNN.pN.csv')
+  dat.N = read.csv(fname, fileEncoding = "GBK")
+  
+  fname  =paste0(path,sname[i],'/null.model.new/RNS.pS.csv')
+  dat.S = read.csv(fname, fileEncoding = "GBK")
+  
+  abund = dat.N[,27]
+  
+  
+  if (i %in% c(4,8,12,16,17)){
+    plot(dat.N[,19],abund, log='y', xlab = 'z-score (abundance)', ylab = 'Abundance', xlim = c(-20,20))
+  }else{
+    plot(dat.N[,19],abund, log='y', ylab = 'abundance', xlab = '', xlim = c(-20,20))
+  }
+  
+  use = dat.N[,11]<0.05
+  points(dat.N[use,19],abund[use],col='red')
+  abline(v =+1.96, col = "black", lty = 2, lwd = 1)
+  abline(v =-1.96, col = "black", lty = 2, lwd = 1)
+  title(site.name[i])
+  
+  if (i %in% c(4,8,12,16,17)){
+    plot(dat.S[,19],abund, log='y', xlab = 'z-score (richness)', ylab='', xlim = c(-20,20))
+  }else{
+    plot(dat.S[,19],abund, log='y', xlab = '', ylab='', xlim = c(-20,20))
+  }
+  
+  use = dat.S[,11]<0.05
+  points(dat.S[use,19],abund[use],col='red')
+  abline(v =+1.96, col = "black", lty = 2, lwd = 1)
+  abline(v =-1.96, col = "black", lty = 2, lwd = 1)
+  title(site.name[i])
+  
+}
+
+
+############################################################################################################################
+######           for LARGE TREE EXCLUSION ANALYSIS    (extednded Data Fig. 3???)                                ############
+############################################################################################################################
+
+for (iii in 1:17){
+  
+  fname  =paste0('Sites/',sname[iii],'/plotname.all.Rdata')
+  dat = load(fname)
+  
+  res$cvb=cvb
+  res$Lx=Lx
+  res$Ly=Ly
+  res$n0=length(res$N[1,])
+  fname  =paste0('Sites/',sname[iii],'/NewTest.RData')
+  saveRDS(res,fname)
+}
+
+#--------------------------------
+rm(list = ls())
+setwd("C:/Users/mdetto/Princeton Dropbox/Matteo Detto/paper/Han/NeighborhoodDiversity/Resubmission/analysis_01262026")
+source("myplot.r")
+path = 'Sites/'
+site.summary = read.csv('SiteSummary17.csv',header = T)
+path = 'Sites/'
+sname=dir(path)
+
+n.class = 25
+
+for (iii in 1:17){
+  cat(iii,"\r")
+  fname  =paste0(path,sname[iii],'/plotname.all.RData')
+  datx = load(fname)
+  
+  
+  q = quantile(log(dbh),probs=seq(0,1,length.out = n.class+1))
+  X.S=X.H=numeric(n.class)
+  for (i in 1:n.class){
+    use=log(dbh)>=q[i] & log(dbh)<q[i+1]
+    X.S[i] = mean(res$S[1,use])
+    X.H[i] = mean(res$H[1,use])
+    
+  }
+  
+  par(mfrow = c(1, 2))
+  
+  plot(1:n.class, X.S, type = "o") 
+  plot(1:n.class, X.H/X.S, type = "o")  
+  title(sname[iii])
+  
+}
