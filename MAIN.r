@@ -1,16 +1,15 @@
-############################################################################################################################
-#########             Figure 2 (or extended Data Fig.1 and extended Data Fig.2)                          ###################
-############################################################################################################################
+# Figure 2 (or extended Data Fig.1 and extended Data Fig.2) ########################################################
 rm(list = ls())
 source("myplot.r")
 path = 'Sites/'
 site.summary = read.csv('SiteSummary.csv',header = T)
 area=site.summary$area
 sname=dir(path)
-j = 1           # radius unit (j=1,2,...,8 --> 2,4,...,16 m)
+j = 4           # radius unit (j=1,2,...,8 --> 2,4,...,16 m)
 p.tr = 1        # set this to 0.05 for excluding non-significant species no null model test, 1 no significant level
 abund.tr = 1    # set this to 50 for excluding rare species 
 R.pN = R.pS = SE.pN = SE.pS = numeric(17)
+
 
 for (i in 1:17){
   cat(i,"\r")
@@ -43,9 +42,8 @@ myplot(x = site.summary$adj.lat.abs, R.pN, SE.pN, R.pS, SE.pS,
        ylabel = "positive neighborhood",
        c(0,70),c(0,0.7))
 
-############################################################################################################################
-#########                 Figure 3 (legumes and non-AM exclusion analysis)                               ###################
-############################################################################################################################
+
+#Figure 3 (legumes and non-AM exclusion analysis) #################################################################
 rm(list = ls())
 site.summary = read.csv('SiteSummary.csv',header = T)
 path = 'Sites/'
@@ -195,9 +193,7 @@ as.numeric(format(round(h1, 4)))
 format(round(h2, 4),nsmall = 4)
 
 
-############################################################################################################################
-#########                 Data Figure 4  (and extended Data Figure 4)                                    ###################
-############################################################################################################################
+# Data Figure 4  (and extended Data Figure 4) ############################################################
 rm(list = ls())
 site.summary = read.csv('SiteSummary.csv',header = T)
 path = 'Sites/'
@@ -243,11 +239,8 @@ for (i in 1:17){
 }
 
 
-############################################################################################################################
-#########                         Figure 5    (MAT)                                                      ###################
-############################################################################################################################
+# Figure 5    (MAT) ##########################################################################################
 rm(list = ls())
-setwd("C:/Users/mdetto/Princeton Dropbox/Matteo Detto/paper/Han/NeighborhoodDiversity/Resubmission/analysis_01262026")
 source("myplot.r")
 path = 'Sites/'
 site.summary = read.csv('SiteSummary.csv',header = T)
@@ -290,111 +283,7 @@ myplot(site.summary$annu.temp, R.pN, SE.pN, R.pS, SE.pS,
 
 
 
-############################################################################################################################
-#########                  Extended Data Figure 6 (absolute proportions)                                 ###################
-############################################################################################################################
-rm(list = ls())
-setwd("C:/Users/mdetto/Princeton Dropbox/Matteo Detto/paper/Han/NeighborhoodDiversity/Resubmission/analysis_01262026")
-source("myplot.r")
-site.summary = read.csv('SiteSummary.csv',header = T)
-path = 'Sites/'
-sname=dir(path)
-j = 1
-R.aN = R.aS = numeric(17)
-R.pN = R.pS = numeric(17)
-R.nN = R.nS = numeric(17)
-SE.aN = SE.aS = numeric(17)
-SE.pN = SE.pS = numeric(17)
-SE.nN = SE.nS = numeric(17)
-
-R.pN.std = R.pS.std = numeric(17)
-R.nN.std = R.nS.std = numeric(17)
-SE.pN.std = SE.pS.std = numeric(17)
-SE.nN.std = SE.nS.std = numeric(17)
-
-N = numeric(17)
-for (i in 1:17){
-  cat(i,"\r")
-  fname  =paste0(path,sname[i],'/null.model/RNN.pN.csv')
-  dat.N = read.csv(fname, fileEncoding = "GBK")
-  
-  fname  =paste0(path,sname[i],'/null.model/RNS.pS.csv')
-  dat.S = read.csv(fname, fileEncoding = "GBK")
-  
-  abund = dat.N[,27]
-  
-  
-  use =  !is.na(dat.N[,3]) & abund>1
-  n = sum(use)
-  
-  R.pN[i] = sum(dat.N[use,(2+j)]>1 & dat.N[use,(10+j)]<0.05)/n
-  R.pS[i] = sum(dat.S[use,(2+j)]>1 & dat.S[use,(10+j)]<0.05)/n
-  SE.pN[i] = sqrt(R.pN[i]*(1-R.pN[i])/n)
-  SE.pS[i] = sqrt(R.pS[i]*(1-R.pS[i])/n)
-  
-  R.nN[i] = sum(dat.N[use,(2+j)]<1 & dat.N[use,(10+j)]<0.05)/n
-  R.nS[i] = sum(dat.S[use,(2+j)]<1 & dat.S[use,(10+j)]<0.05)/n
-  SE.nN[i] = sqrt(R.nN[i]*(1-R.nN[i])/n)
-  SE.nS[i] = sqrt(R.nS[i]*(1-R.nS[i])/n)
-  
-  R.aN[i] = sum(dat.N[use,(10+j)]<0.05)/n
-  R.aS[i] = sum(dat.S[use,(10+j)]<0.05)/n
-  SE.aN[i] = sqrt(R.aN[i]*(1-R.aN[i])/n)
-  SE.aS[i] = sqrt(R.aS[i]*(1-R.aS[i])/n)
-  
-  
-  
-  N[i] = mean(abund[use])
-  
-  
-  ## standardized
-  nd = data.frame(x  = 3)
-  x = log10(abund[use])
-  y = dat.N[use,(2+j)]>1 & dat.N[use,(10+j)]<0.05  
-  lm1 = glm(y~x,family=binomial())
-  pred = predict(lm1,nd,type = "response", se.fit = TRUE)
-  R.pN.std[i]  = pred$fit
-  SE.pN.std[i] = pred$se.fit
-  
-  y = dat.N[use,(2+j)]>1 & dat.S[use,(10+j)]<0.05  
-  lm1=glm(y~x,family=binomial())
-  pred = predict(lm1,nd,type = "response", se.fit = TRUE);
-  R.pS.std[i]  = pred$fit
-  SE.pS.std[i] = pred$se.fit
-  
-  y = dat.N[use,(2+j)]<1 & dat.N[use,(10+j)]<0.05  
-  lm1=glm(y~x,family=binomial())
-  pred = predict(lm1,nd,type = "response", se.fit = TRUE);
-  R.nN.std[i]  = pred$fit
-  SE.nN.std[i] = pred$se.fit
-  
-  y = dat.N[use,(2+j)]<1 & dat.S[use,(10+j)]<0.05  
-  lm1=glm(y~x,family=binomial())
-  pred = predict(lm1,nd,type = "response", se.fit = TRUE);
-  R.nS.std[i]  = pred$fit
-  SE.nS.std[i] = pred$se.fit
-  
-}
-
-
-
-
-par(mfrow = c(2, 2))
-## positive
-myplot(x = site.summary$adj.lat.abs, R.pN, SE.pN, R.pS, SE.pS,
-       xlabel = "Absolute adjusted latitude",
-       ylabel = "positive neighborhood",
-       c(0,70),c(0,1))
-
-
-
-## negative
-myplot(x = site.summary$adj.lat.abs, R.nN, SE.nN, R.nS, SE.nS,
-       xlabel = "Absolute adjusted latitude",
-       ylabel = "negative neighborhood",
-       c(0,70),c(0,1))
-
-#####
+# Extended Data Figure 6 (absolute proportions) ##############################################################
 par(mfrow = c(1, 2))
 ## all significant
 myplot(x = N, R.aN, SE.aN, R.aS, SE.aS,
@@ -420,14 +309,10 @@ myplot(x = site.summary$adj.lat.abs, R.nN.std, SE.nN.std*0, R.nS.std, SE.nS.std*
 
 
 
-
-############################################################################################################################
-#########                  Extended Data Figure 7  (z-score)                                             ###################
-############################################################################################################################
+# Extended Data Figure 7  (z-score) ###########################################################################
 rm(list = ls())
 site.name=c("Barro Colorado Island (BCI)","Baishanzu","Chebaling", "Dinghushan", "Gutianshan", "Heishiding", "Jianfengling", "Luquillo", 
             "Nanling", "Palanan", "Pasoh", "Puer", "Rabi", "TPK", "Utah", "Wanang","Yasuni")
-setwd("C:/Users/mdetto/Princeton Dropbox/Matteo Detto/paper/Han/NeighborhoodDiversity/Resubmission/analysis_01262026")
 path = 'Sites/'
 sname=dir(path)
 j = 1
@@ -470,9 +355,14 @@ for (i in 1:17){
 }
 
 
-############################################################################################################################
-######           for LARGE TREE EXCLUSION ANALYSIS    (extednded Data Fig. 3???)                                ############
-############################################################################################################################
+
+# for LARGE TREE EXCLUSION ANALYSIS    (extended Data Fig. 3???) ###########################################
+source("myplot.r")
+path = 'Sites/'
+site.summary = read.csv('SiteSummary.csv',header = T)
+path = 'Sites/'
+sname=dir(path)
+
 
 for (iii in 1:17){
   
@@ -488,13 +378,6 @@ for (iii in 1:17){
 }
 
 #--------------------------------
-rm(list = ls())
-setwd("C:/Users/mdetto/Princeton Dropbox/Matteo Detto/paper/Han/NeighborhoodDiversity/Resubmission/analysis_01262026")
-source("myplot.r")
-path = 'Sites/'
-site.summary = read.csv('SiteSummary.csv',header = T)
-path = 'Sites/'
-sname=dir(path)
 
 n.class = 25
 
