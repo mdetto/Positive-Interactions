@@ -2,24 +2,22 @@
 #########             Figure 2 (or extended Data Fig.1 and extended Data Fig.2)                          ###################
 ############################################################################################################################
 rm(list = ls())
-setwd("C:/Users/mdetto/Princeton Dropbox/Matteo Detto/paper/Han/NeighborhoodDiversity/Resubmission/analysis_01262026")
 source("myplot.r")
-site.summary = read.csv('SiteSummary17.csv',header = T)
-area=site.summary$area
 path = 'Sites/'
+site.summary = read.csv('SiteSummary.csv',header = T)
+area=site.summary$area
 sname=dir(path)
-library(BSDA)
 j = 1           # radius unit (j=1,2,...,8 --> 2,4,...,16 m)
 p.tr = 1        # set this to 0.05 for excluding non-significant species no null model test, 1 no significant level
-abund.tr = 50   # set this to 50 for excluding rare species 
+abund.tr = 1    # set this to 50 for excluding rare species 
 R.pN = R.pS = SE.pN = SE.pS = numeric(17)
 
 for (i in 1:17){
   cat(i,"\r")
-  fname = paste0(path,sname[i],'/null.model.new/RNN.pN.csv')
+  fname = paste0(path,sname[i],'/null.model/RNN.pN.csv')
   dat.N = read.csv(fname, fileEncoding = "GBK")
   
-  fname = paste0(path,sname[i],'/null.model.new/RNS.pS.csv')
+  fname = paste0(path,sname[i],'/null.model/RNS.pS.csv')
   dat.S = read.csv(fname, fileEncoding = "GBK")
   
   abund = dat.N[,27]
@@ -49,8 +47,7 @@ myplot(x = site.summary$adj.lat.abs, R.pN, SE.pN, R.pS, SE.pS,
 #########                 Figure 3 (legumes and non-AM exclusion analysis)                               ###################
 ############################################################################################################################
 rm(list = ls())
-setwd("C:/Users/mdetto/Princeton Dropbox/Matteo Detto/paper/Han/NeighborhoodDiversity/Resubmission/analysis_01262026")
-site.summary = read.csv('SiteSummary17.csv',header = T)
+site.summary = read.csv('SiteSummary.csv',header = T)
 path = 'Sites/'
 sname=dir(path)
 library(BSDA)
@@ -62,10 +59,10 @@ R.pN2 = R.pS2 = matrix(nrow=17,ncol=8)
 
 for (i in 1:17){
   cat(i,"\r")
-  fname  =paste0(path,sname[i],'/null.model.new/RNN.pN.csv')
+  fname  =paste0(path,sname[i],'/null.model/RNN.pN.csv')
   dat.N = read.csv(fname, fileEncoding = "GBK")
   
-  fname  =paste0(path,sname[i],'/null.model.new/RNS.pS.csv')
+  fname  =paste0(path,sname[i],'/null.model/RNS.pS.csv')
   dat.S = read.csv(fname, fileEncoding = "GBK")
   
   abund = dat.N[,27]
@@ -202,13 +199,9 @@ format(round(h2, 4),nsmall = 4)
 #########                 Data Figure 4  (and extended Data Figure 4)                                    ###################
 ############################################################################################################################
 rm(list = ls())
-setwd("C:/Users/mdetto/Princeton Dropbox/Matteo Detto/paper/Han/NeighborhoodDiversity/Resubmission/analysis_01262026")
-source("myplot.r")
-site.summary = read.csv('SiteSummary17.csv',header = T)
-area=site.summary$area
+site.summary = read.csv('SiteSummary.csv',header = T)
 path = 'Sites/'
 sname=dir(path)
-library(BSDA)
 site.name=c("Barro Colorado Island (BCI)","Baishanzu","Chebaling", "Dinghushan", "Gutianshan", "Heishiding", "Jianfengling", "Luquillo", 
          "Nanling", "Palanan", "Pasoh", "Puer", "Rabi", "TPK", "Utah", "Wanang","Yasuni")
 
@@ -216,10 +209,10 @@ plt=c(1:17)
 par(mfrow = c(4, 2), mar=c(4.1,4,2,1))
 for (i in 1:17){
   j = plt[i]
-  fname  =paste0(path,sname[j],'/null.model.new/RNN.pN.csv')
+  fname  =paste0(path,sname[j],'/null.model/RNN.pN.csv')
   dat.N = read.csv(fname, fileEncoding = "GBK")
   
-  fname  =paste0(path,sname[j],'/null.model.new/RNS.pS.csv')
+  fname  =paste0(path,sname[j],'/null.model/RNS.pS.csv')
   dat.S = read.csv(fname, fileEncoding = "GBK")
   
   abund = dat.N[,27]
@@ -257,7 +250,7 @@ rm(list = ls())
 setwd("C:/Users/mdetto/Princeton Dropbox/Matteo Detto/paper/Han/NeighborhoodDiversity/Resubmission/analysis_01262026")
 source("myplot.r")
 path = 'Sites/'
-site.summary = read.csv('SiteSummary17.csv',header = T)
+site.summary = read.csv('SiteSummary.csv',header = T)
 area=site.summary$area
 sname=dir(path)
 j = 1
@@ -266,10 +259,10 @@ SE.pN = SE.pS = numeric(17)
 
 for (i in 1:17){
   cat(i,"\r")
-  fname = paste0(path,sname[i],'/null.model.new/RNN.pN.csv')
+  fname = paste0(path,sname[i],'/null.model/RNN.pN.csv')
   dat.N = read.csv(fname, fileEncoding = "GBK")
   
-  fname  =paste0(path,sname[i],'/null.model.new/RNS.pS.csv')
+  fname  =paste0(path,sname[i],'/null.model/RNS.pS.csv')
   dat.S = read.csv(fname, fileEncoding = "GBK")
   
   abund = dat.N[,27]
@@ -303,7 +296,7 @@ myplot(site.summary$annu.temp, R.pN, SE.pN, R.pS, SE.pS,
 rm(list = ls())
 setwd("C:/Users/mdetto/Princeton Dropbox/Matteo Detto/paper/Han/NeighborhoodDiversity/Resubmission/analysis_01262026")
 source("myplot.r")
-site.summary = read.csv('SiteSummary17.csv',header = T)
+site.summary = read.csv('SiteSummary.csv',header = T)
 path = 'Sites/'
 sname=dir(path)
 j = 1
@@ -322,10 +315,10 @@ SE.nN.std = SE.nS.std = numeric(17)
 N = numeric(17)
 for (i in 1:17){
   cat(i,"\r")
-  fname  =paste0(path,sname[i],'/null.model.new/RNN.pN.csv')
+  fname  =paste0(path,sname[i],'/null.model/RNN.pN.csv')
   dat.N = read.csv(fname, fileEncoding = "GBK")
   
-  fname  =paste0(path,sname[i],'/null.model.new/RNS.pS.csv')
+  fname  =paste0(path,sname[i],'/null.model/RNS.pS.csv')
   dat.S = read.csv(fname, fileEncoding = "GBK")
   
   abund = dat.N[,27]
@@ -441,10 +434,10 @@ j = 1
 par(mfrow = c(4, 2), mar=c(4.1,4,2,1))
 for (i in 1:17){
   
-  fname  =paste0(path,sname[i],'/null.model.new/RNN.pN.csv')
+  fname  =paste0(path,sname[i],'/null.model/RNN.pN.csv')
   dat.N = read.csv(fname, fileEncoding = "GBK")
   
-  fname  =paste0(path,sname[i],'/null.model.new/RNS.pS.csv')
+  fname  =paste0(path,sname[i],'/null.model/RNS.pS.csv')
   dat.S = read.csv(fname, fileEncoding = "GBK")
   
   abund = dat.N[,27]
@@ -499,7 +492,7 @@ rm(list = ls())
 setwd("C:/Users/mdetto/Princeton Dropbox/Matteo Detto/paper/Han/NeighborhoodDiversity/Resubmission/analysis_01262026")
 source("myplot.r")
 path = 'Sites/'
-site.summary = read.csv('SiteSummary17.csv',header = T)
+site.summary = read.csv('SiteSummary.csv',header = T)
 path = 'Sites/'
 sname=dir(path)
 

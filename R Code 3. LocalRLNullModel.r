@@ -1,7 +1,7 @@
 ##R Code 4 | Script for local random labeling test, “LocalRLNullModel”.
 ##This null model takes into account the size structure of the community (by randomizing trees within the same size class), and the habitat heterogeneity (by comparing individuals within a 60 m distance).
 
-NullModel=function(mainr){ 
+Null.Model=function(mainr){ 
   
   #parameters setting
   allsp = sort(unique(mainr$sp))   #------------------------------------------------------step 1
