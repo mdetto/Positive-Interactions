@@ -5,7 +5,7 @@ path = 'Sites/'
 site.summary = read.csv('SiteSummary.csv',header = T)
 area=site.summary$area
 sname=dir(path)
-j = 4           # radius unit (j=1,2,...,8 --> 2,4,...,16 m)
+j = 1           # radius unit (j=1,2,...,8 --> 2,4,...,16 m)
 p.tr = 1        # set this to 0.05 for excluding non-significant species no null model test, 1 no significant level
 abund.tr = 1    # set this to 50 for excluding rare species 
 R.pN = R.pS = SE.pN = SE.pS = numeric(17)
