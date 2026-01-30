@@ -1,5 +1,5 @@
 #R Code 1 | Script for computing number of individuals (N) and number of species richness (S) around all stems, “ISAR”.
-#compute number of individuals (N), number of species richness (S), basal area (B) and shannon entropy (H) around all stems
+#compute number of individuals (N), number of species richness (S) of all individuals
 
 # x,y:  stem coordinates
 # Lx, Ly, size of the domain 
@@ -8,13 +8,11 @@
 # sp: species name
 # dbh: diameter
 
-ISAR <- function(x,y,sp,dbh,Lx,Ly,Rmax,dr){
+ISAR <- function(x,y,sp,Lx,Ly,Rmax,dr){
   
 
   n<-length(x)
   R<-seq(dr,Rmax,dr)
-  log.ba <- log(pi/4*dbh^2)
-  mb = mean(log.ba)
   sp.num <- as.numeric(factor(sp))
   
   n.R = length(R)
@@ -22,7 +20,7 @@ ISAR <- function(x,y,sp,dbh,Lx,Ly,Rmax,dr){
   Rmax2 = Rmax*Rmax
   
   # initialize
-  S<-N<-B<-H<-matrix(0,n.R,n)
+  S<-N<-matrix(0,n.R,n)
   
   # main loop across all individuals
   for (i in 1:n){
@@ -45,7 +43,10 @@ ISAR <- function(x,y,sp,dbh,Lx,Ly,Rmax,dr){
       yi[yi<Rmax]<-yi[yi<Rmax]+Ly
     }
     
-    r20<-(xi-xi[i])^2+(yi-yi[i])^2
+    
+    dx = xi - xi[i]
+    dy = yi - yi[i]
+    r20 = dx*dx + dy*dy 
     
     use <- r20>0 & r20<=Rmax2
     z <- sum(use)
@@ -53,17 +54,9 @@ ISAR <- function(x,y,sp,dbh,Lx,Ly,Rmax,dr){
       
       rj  <- r20[use]
       spj <- sp.num[use]
-      log.baj <- log.ba[use]
       
       S[n.R,i] <- length(unique(spj))
       N[n.R,i] <- z
-      B[n.R,i] <- sum(log.baj)/mb
-      
-      cc<-table(spj)/N[n.R,i]
-      h<- -cc*log(cc)
-      h[is.na(h)]<-0
-      
-      H[n.R,i] <- sum(h)   # Shannon entropy
       
     
     for (j in 1:n.R-1){
@@ -76,47 +69,13 @@ ISAR <- function(x,y,sp,dbh,Lx,Ly,Rmax,dr){
         
         S[j,i] <- length(unique(spj[use]))
         N[j,i] <- z
-        B[j,i] <- sum(log.baj[use])/mb
-        
-        cc<-table(spj[use])/N[j,i]
-        h<- -cc*log(cc)
-        h[is.na(h)]<-0
-        
-        H[j,i] <- sum(h)   # Shannon entropy
         
       }
     }
     }
   }
   
+ 
   
-  species <- unique(sp.num)
-  sp.no   <- length(species)
-  
-  SIR.S <- SIR.N <- SIR.B <- SIR.H <- matrix(0,length(R),sp.no)
-
-  no <- numeric(sp.no)
-  for (i in 1:sp.no) {
-    
-    use <- sp.num==species[i]
-    no[i] <- sum(use)
-    if (no[i] >1){
-      SIR.S[,i] <- rowMeans(S[,use])
-      SIR.B[,i] <- rowMeans(B[,use])
-      SIR.N[,i] <- rowMeans(N[,use])
-      SIR.H[,i] <- rowMeans(H[,use])
-    } else if (no[i]==1){
-      SIR.S[,i] <- S[,use]
-      SIR.B[,i] <- B[,use]
-      SIR.N[,i] <- N[,use]
-      SIR.H[,i] <- H[,use]
-    }
-  }
-  
-  
-  return(list(S = S,N = N,B = B,H = H,dist = R, n = no,
-              SIR.S = SIR.S,
-              SIR.N = SIR.N,
-              SIR.B = SIR.B,
-              SIR.H = SIR.H))
+  return(list(S = S,N = N, dist = R, n = no))
 }

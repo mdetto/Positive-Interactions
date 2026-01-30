@@ -1,4 +1,7 @@
-# Figure 2 (or extended Data Fig.1 and extended Data Fig.2) ########################################################
+#__________________________________________________________________________________________________________________
+# Figure 2  ####
+# latitudinal trend (all species >1 individual regardless of significant level)
+#__________________________________________________________________________________________________________________
 rm(list = ls())
 source("myplot.r")
 path = 'Sites/'
@@ -7,7 +10,7 @@ area=site.summary$area
 sname=dir(path)
 j = 1           # radius unit (j=1,2,...,8 --> 2,4,...,16 m)
 p.tr = 1        # set this to 0.05 for excluding non-significant species; 1 for no significant level
-abund.tr = 1    # set this to 50 for excluding rare species 
+abund.tr = 1    # threshold excluding rare species 
 
 R.pN = R.pS = SE.pN = SE.pS = numeric(17)
 for (i in 1:17){
@@ -39,8 +42,10 @@ myplot(x = site.summary$adj.lat.abs, R.pN, SE.pN, R.pS, SE.pS,
        ylabel = "positive neighborhood",
        c(0,70),c(0,0.7))
 
-
-#Figure 3 (legumes and non-AM exclusion analysis) #################################################################
+#__________________________________________________________________________________________________________________
+# Figure 3        ####
+# legumes and non-AM exclusion analysis
+#__________________________________________________________________________________________________________________
 rm(list = ls())
 site.summary = read.csv('SiteSummary.csv',header = T)
 path = 'Sites/'
@@ -187,8 +192,10 @@ for (j in 1:8){
 as.numeric(format(round(h1, 4)))
 format(round(h2, 4),nsmall = 4)
 
-
-# Data Figure 4  (and extended Data Figure 4) ############################################################
+#__________________________________________________________________________________________________________________
+# Figure 4 and Extended Data Figure 4    #####
+# RNN and RNS as function of abundance for each site
+#__________________________________________________________________________________________________________________
 rm(list = ls())
 site.summary = read.csv('SiteSummary.csv',header = T)
 path = 'Sites/'
@@ -233,8 +240,10 @@ for (i in 1:17){
   
 }
 
-
-# Figure 5    (MAT) ##########################################################################################
+#__________________________________________________________________________________________________________________
+# Figure 5     #####
+# trend with mean annual temperature (MAT)
+#__________________________________________________________________________________________________________________
 rm(list = ls())
 source("myplot.r")
 path = 'Sites/'
@@ -275,7 +284,169 @@ myplot(site.summary$annu.temp, R.pN, SE.pN, R.pS, SE.pS,
 
 
 
-# Extended Data Figure 6 (absolute proportions) ##############################################################
+#__________________________________________________________________________________________________________________
+# Extended Data Figure 1 #####
+# latitudinal trend (excluding rare species, abundant<50)
+#__________________________________________________________________________________________________________________
+rm(list = ls())
+source("myplot.r")
+path = 'Sites/'
+site.summary = read.csv('SiteSummary.csv',header = T)
+area=site.summary$area
+sname=dir(path)
+j = 1           # radius unit (j=1,2,...,8 --> 2,4,...,16 m)
+p.tr = 1        # set this to 0.05 for excluding non-significant species; 1 for no significant level
+abund.tr = 50    # set this to 50 for excluding rare species 
+
+R.pN = R.pS = SE.pN = SE.pS = numeric(17)
+for (i in 1:17){
+  cat(i,"\r")
+  fname = paste0(path,sname[i],'/null.model/RNN.pN.csv')
+  dat.N = read.csv(fname, fileEncoding = "GBK")
+  
+  fname = paste0(path,sname[i],'/null.model/RNS.pS.csv')
+  dat.S = read.csv(fname, fileEncoding = "GBK")
+  
+  abund = dat.N[,27]
+  
+  use =  !is.na(dat.N[,(2+j)]) & abund>=abund.tr & dat.N[,(10+j)]<=p.tr
+  n = sum(use)
+  R.pN[i] = sum(dat.N[use,(2+j)]>1)/n
+  SE.pN[i] = sqrt(R.pN[i]*(1-R.pN[i])/n)
+  
+  
+  use =  !is.na(dat.N[,(2+j)]) & abund>=abund.tr & dat.S[,(10+j)]<=p.tr
+  n = sum(use)
+  R.pS[i] = sum(dat.S[use,(2+j)]>1)/n
+  SE.pS[i] = sqrt(R.pS[i]*(1-R.pS[i])/n)
+  
+}
+
+par(mfrow = c(1, 2))
+myplot(x = site.summary$adj.lat.abs, R.pN, SE.pN, R.pS, SE.pS,
+       xlabel = "Absolute adjusted latitude",
+       ylabel = "positive neighborhood",
+       c(0,70),c(0,0.7))
+
+#__________________________________________________________________________________________________________________
+# Extended Data Fig.2  #####
+# latitudinal trend (excluding non-significant species according to null.model)
+#__________________________________________________________________________________________________________________
+rm(list = ls())
+source("myplot.r")
+path = 'Sites/'
+site.summary = read.csv('SiteSummary.csv',header = T)
+area=site.summary$area
+sname=dir(path)
+j = 1           # radius unit (j=1,2,...,8 --> 2,4,...,16 m)
+p.tr = 0.05     # set this to 0.05 for excluding non-significant species; 1 for no significant level
+abund.tr = 1    # set this to 50 for excluding rare species 
+
+R.pN = R.pS = SE.pN = SE.pS = numeric(17)
+for (i in 1:17){
+  cat(i,"\r")
+  fname = paste0(path,sname[i],'/null.model/RNN.pN.csv')
+  dat.N = read.csv(fname, fileEncoding = "GBK")
+  
+  fname = paste0(path,sname[i],'/null.model/RNS.pS.csv')
+  dat.S = read.csv(fname, fileEncoding = "GBK")
+  
+  abund = dat.N[,27]
+  
+  use =  !is.na(dat.N[,(2+j)]) & abund>=abund.tr & dat.N[,(10+j)]<=p.tr
+  n = sum(use)
+  R.pN[i] = sum(dat.N[use,(2+j)]>1)/n
+  SE.pN[i] = sqrt(R.pN[i]*(1-R.pN[i])/n)
+  
+  
+  use =  !is.na(dat.N[,(2+j)]) & abund>=abund.tr & dat.S[,(10+j)]<=p.tr
+  n = sum(use)
+  R.pS[i] = sum(dat.S[use,(2+j)]>1)/n
+  SE.pS[i] = sqrt(R.pS[i]*(1-R.pS[i])/n)
+  
+}
+
+par(mfrow = c(1, 2))
+myplot(x = site.summary$adj.lat.abs, R.pN, SE.pN, R.pS, SE.pS,
+       xlabel = "Absolute adjusted latitude",
+       ylabel = "positive neighborhood",
+       c(0,70),c(0,0.8))
+
+#__________________________________________________________________________________________________________________
+# Extended Data Fig.3      #########
+# # latitudinal trend (excluding large trees)
+#__________________________________________________________________________________________________________________
+rm(list = ls())
+source("myplot.r")
+path = 'Sites/'
+site.summary = read.csv('SiteSummary.csv',header = T)
+area=site.summary$area
+sname=dir(path)
+j = 1           # radius unit (j=1,2,...,8 --> 2,4,...,16 m)
+p.tr = 1        # set this to 0.05 for excluding non-significant species; 1 for no significant level
+abund.tr = 50    # set this to 50 for excluding rare species 
+
+R95.pN = R95.pS = SE95.pN = SE95.pS = numeric(17)
+R90.pN = R90.pS = SE90.pN = SE90.pS = numeric(17)
+for (i in 1:17){
+  cat(i,"\r")
+  fname = paste0(path,sname[i],'/null.model/RNN95.pN.csv')
+  dat.N = read.csv(fname, fileEncoding = "GBK")
+  
+  fname = paste0(path,sname[i],'/null.model/RNS95.pS.csv')
+  dat.S = read.csv(fname, fileEncoding = "GBK")
+  
+  abund = dat.N[,11]
+  
+  use =  !is.na(dat.N[,(2+j)]) & abund>=abund.tr
+  n = sum(use)
+  R95.pN[i] = sum(dat.N[use,(2+j)]>1)/n
+  SE95.pN[i] = sqrt(R95.pN[i]*(1-R95.pN[i])/n)
+  
+  
+  use =  !is.na(dat.S[,(2+j)]) & abund>=abund.tr
+  n = sum(use)
+  R95.pS[i] = sum(dat.S[use,(2+j)]>1)/n
+  SE95.pS[i] = sqrt(R95.pS[i]*(1-R95.pS[i])/n)
+  
+  #  90 
+  fname = paste0(path,sname[i],'/null.model/RNN90.pN.csv')
+  dat.N = read.csv(fname, fileEncoding = "GBK")
+  
+  fname = paste0(path,sname[i],'/null.model/RNS90.pS.csv')
+  dat.S = read.csv(fname, fileEncoding = "GBK")
+  
+  abund = dat.N[,11]
+  
+  use =  !is.na(dat.N[,(2+j)]) & abund>=abund.tr
+  n = sum(use)
+  R90.pN[i] = sum(dat.N[use,(2+j)]>1)/n
+  SE90.pN[i] = sqrt(R90.pN[i]*(1-R90.pN[i])/n)
+  
+  
+  use =  !is.na(dat.S[,(2+j)]) & abund>=abund.tr
+  n = sum(use)
+  R90.pS[i] = sum(dat.S[use,(2+j)]>1)/n
+  SE90.pS[i] = sqrt(R90.pS[i]*(1-R90.pS[i])/n)
+  
+}
+
+par(mfrow = c(2, 2))
+myplot(x = site.summary$adj.lat.abs, R95.pN, SE95.pN, R95.pS, SE95.pS,
+       xlabel = "Absolute adjusted latitude",
+       ylabel = "positive neighborhood",
+       c(0,70),c(0,0.7))
+
+myplot(x = site.summary$adj.lat.abs, R90.pN, SE90.pN, R90.pS, SE90.pS,
+       xlabel = "Absolute adjusted latitude",
+       ylabel = "positive neighborhood",
+       c(0,70),c(0,1))
+
+
+#__________________________________________________________________________________________________________________
+# Extended Data Figure 6    #####
+# latitudinal trend with absolute proportions
+#__________________________________________________________________________________________________________________
 rm(list = ls())
 source("myplot.r")
 site.summary = read.csv('SiteSummary.csv',header = T)
@@ -398,8 +569,10 @@ myplot(x = site.summary$adj.lat.abs, R.nN.std, SE.nN.std*0, R.nS.std, SE.nS.std*
 
 
 
-
-# Extended Data Figure 7  (z-score) ###########################################################################
+#__________________________________________________________________________________________________________________
+# Extended Data Figure 7 ####
+# z-score
+#__________________________________________________________________________________________________________________
 rm(list = ls())
 site.name=c("Barro Colorado Island (BCI)","Baishanzu","Chebaling", "Dinghushan", "Gutianshan", "Heishiding", "Jianfengling", "Luquillo", 
             "Nanling", "Palanan", "Pasoh", "Puer", "Rabi", "TPK", "Utah", "Wanang","Yasuni")
@@ -444,52 +617,3 @@ for (i in 1:17){
   
 }
 
-
-
-# for LARGE TREE EXCLUSION ANALYSIS    (extended Data Fig. 3???) ###########################################
-source("myplot.r")
-path = 'Sites/'
-site.summary = read.csv('SiteSummary.csv',header = T)
-path = 'Sites/'
-sname=dir(path)
-
-
-for (iii in 1:17){
-  
-  fname  =paste0('Sites/',sname[iii],'/plotname.all.Rdata')
-  dat = load(fname)
-  
-  res$cvb=cvb
-  res$Lx=Lx
-  res$Ly=Ly
-  res$n0=length(res$N[1,])
-  fname  =paste0('Sites/',sname[iii],'/NewTest.RData')
-  saveRDS(res,fname)
-}
-
-#--------------------------------
-
-n.class = 25
-
-for (iii in 1:17){
-  cat(iii,"\r")
-  fname  =paste0(path,sname[iii],'/plotname.all.RData')
-  datx = load(fname)
-  
-  
-  q = quantile(log(dbh),probs=seq(0,1,length.out = n.class+1))
-  X.S=X.H=numeric(n.class)
-  for (i in 1:n.class){
-    use=log(dbh)>=q[i] & log(dbh)<q[i+1]
-    X.S[i] = mean(res$S[1,use])
-    X.H[i] = mean(res$H[1,use])
-    
-  }
-  
-  par(mfrow = c(1, 2))
-  
-  plot(1:n.class, X.S, type = "o") 
-  plot(1:n.class, X.H/X.S, type = "o")  
-  title(sname[iii])
-  
-}
