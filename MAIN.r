@@ -128,7 +128,8 @@ points(c(1:8)*2,r3,col='blue',pch=19)
 lines(c(1:8)*2,r3,col='blue')
 legend(x='bottomright',legend=c('All species','Leguminous species excluded',"Non-AM species excluded"), fill = c("black","red", "blue") )
 
-## bootstrapping to get the p values, for the before and after exclusion comparison
+# bootstrappingto estimate the statistical significance of the change in R2
+# observed between the full dataset and the subset following exclusions
 r1=r2=numeric(999)
 h1 = h2 = numeric(8)
 for (j in 1:8){
@@ -142,13 +143,10 @@ for (j in 1:8){
     
   }
   
-  # h[j] = t.test(r1,r2)$p.value
   h1[j] = z.test(r1,r2,sigma.x = sd(r1),sigma.y = sd(r2))$p.value
   h2[j] = z.test(r1,r3,sigma.x = sd(r1),sigma.y = sd(r3))$p.value
 }
 
-as.numeric(format(round(h1, 4)))
-format(round(h2, 4),nsmall = 4)
 
 # richness
 lR.pH0=log(R.pS0)
@@ -170,7 +168,8 @@ points(c(1:8)*2,r3,col='blue',pch=19)
 lines(c(1:8)*2,r3,col='blue')
 legend(x='bottomright',legend=c('All species','Leguminous species excluded',"Non-AM species excluded"), fill = c("black","red", "blue") )
 
-## bootstrapping to get the p values, for the before and after exclusion comparison
+# bootstrappingto estimate the statistical significance of the change in R2
+# observed between the full dataset and the subset following exclusions
 r1=r2=numeric(999)
 h1 = h2 = numeric(8)
 for (j in 1:8){
@@ -184,13 +183,10 @@ for (j in 1:8){
     
   }
   
-  # h[j] = t.test(r1,r2)$p.value
   h1[j] = z.test(r1,r2,sigma.x = sd(r1),sigma.y = sd(r2))$p.value
   h2[j] = z.test(r1,r3,sigma.x = sd(r1),sigma.y = sd(r3))$p.value
 }
 
-as.numeric(format(round(h1, 4)))
-format(round(h2, 4),nsmall = 4)
 
 #__________________________________________________________________________________________________________________
 # Figure 4 and Extended Data Figure 4    #####
