@@ -131,7 +131,7 @@ points(c(1:8)*2,r2,col='red',pch=19)
 lines(c(1:8)*2,r2,col='red')
 points(c(1:8)*2,r3,col='blue',pch=19)
 lines(c(1:8)*2,r3,col='blue')
-legend(x='bottomright',legend=c('All species','Leguminous species excluded',"Non-AM species excluded"), fill = c("black","red", "blue") )
+legend(x='bottomright',legend=c('All species','Leguminous species excluded',"Non-AM species excluded"), fill = c("black","red", "blue"), bty="n")
 
 # bootstrappingto estimate the statistical significance of the change in R2
 # observed between the full dataset and the subset following exclusions
@@ -171,7 +171,7 @@ points(c(1:8)*2,r2,col='red',pch=19)
 lines(c(1:8)*2,r2,col='red')
 points(c(1:8)*2,r3,col='blue',pch=19)
 lines(c(1:8)*2,r3,col='blue')
-legend(x='bottomright',legend=c('All species','Leguminous species excluded',"Non-AM species excluded"), fill = c("black","red", "blue") )
+legend(x='bottomright',legend=c('All species','Leguminous species excluded',"Non-AM species excluded"), fill = c("black","red", "blue"), bty="n")
 
 # bootstrappingto estimate the statistical significance of the change in R2
 # observed between the full dataset and the subset following exclusions
