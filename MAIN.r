@@ -12,7 +12,7 @@ j = 1           # radius unit (j=1,2,...,8 --> 2,4,...,16 m)
 p.tr = 1        # set this to 0.05 for excluding non-significant species; 1 for no significant level
 abund.tr = 1    # threshold excluding rare species 
 
-R.pN = R.pS = SE.pN = SE.pS = numeric(17)
+R.pN = R.pS = SE.pN = SE.pS = n.size = numeric(17)
 for (i in 1:17){
   cat(i,"\r")
   fname = paste0(path,sname[i],'/null.model/RNN.pN.csv')
@@ -34,6 +34,7 @@ for (i in 1:17){
   R.pS[i] = sum(dat.S[use,(2+j)]>1)/n
   SE.pS[i] = sqrt(R.pS[i]*(1-R.pS[i])/n)
   
+  n.size[i]=n
 }
 
 par(mfrow = c(1, 2))
@@ -41,6 +42,10 @@ myplot(x = site.summary$adj.lat.abs, R.pN, SE.pN, R.pS, SE.pS,
        xlabel = "Absolute adjusted latitude",
        ylabel = "positive neighborhood",
        c(0,70),c(0,0.7))
+
+# Create the combined string to add to Figure caption
+caption_text <- as.factor(paste0(sname, " (", n.size, "),"))
+
 
 #__________________________________________________________________________________________________________________
 # Figure 3        ####
